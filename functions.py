@@ -25,9 +25,11 @@ def write_file(todo_arg, filepath=FILEPATH):
 def read_completed_tasks(filepath=COMPLETED_TASKS_FILEPATH):
     if not os.path.exists(filepath):
        return {}
-    with open(filepath, 'r') as file_local:
-        return json.load(file_local)
-
+    try:
+        with open(filepath, 'r') as file_local:
+            return json.load(file_local)
+    except json.JSONDecodeError:
+        return {}
 
 def write_completed_tasks(completed_tasks, filepath=COMPLETED_TASKS_FILEPATH):
     if not os.path.exists(filepath):
