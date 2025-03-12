@@ -10,6 +10,7 @@ def add_todo():
     todos.append(todo_n)
     functions.write_file(todos)
     st.session_state['new_todo'] = ''
+    display_completed_tasks()
 
 def update_completed_tasks(completed_task):
     completed_tasks = functions.read_completed_tasks()
