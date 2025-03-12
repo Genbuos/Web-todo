@@ -16,8 +16,8 @@ def update_completed_tasks():
     completed_tasks = functions.read_completed_tasks()
     today = datetime.date.today().isoformat()
     if today not in completed_tasks:
-        completed_tasks[today] = 0
-    completed_tasks[today] += 1
+        completed_tasks[today] = []
+    completed_tasks[today].append(st.session_state['new_todo'])
     functions.write_completed_tasks(completed_tasks)
 
     streak = functions.calculate_streak(completed_tasks)
