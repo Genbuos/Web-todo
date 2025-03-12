@@ -3,7 +3,7 @@ import os
 import datetime
 
 FILEPATH = "todos.txt"
-COMPLETED_TASKS_FILEPATH ="completed_tasks.json"
+COMPLETED_TASKS_FILEPATH = "completed_tasks.txt"
 
 def read_file(filepath=FILEPATH):
     """ This reads our txt file that stores the objectives added by the user.
@@ -24,16 +24,21 @@ def write_file(todo_arg, filepath=FILEPATH):
 
 def read_completed_tasks(filepath=COMPLETED_TASKS_FILEPATH):
     if not os.path.exists(filepath):
-       return {}
-    try:
-        with open(filepath, 'r') as file_local:
-            return json.load(file_local)
-    except json.JSONDecodeError:
         return {}
+    completed_tasks = {}
+    with open(filepath, 'r') as file_local:
+        for line in file_local:
+            date, task = line.strip().split('|', 1)
+            if date not in completed_tasks:
+                completed_tasks[date] = []
+            completed_tasks[date].append(task)
+    return completed_tasks
 
 def write_completed_tasks(completed_tasks, filepath=COMPLETED_TASKS_FILEPATH):
     with open(filepath, 'w') as file_local:
-        json.dump(completed_tasks, file_local)
+        for date, tasks in completed_tasks.items():
+            for task in tasks:
+                file_local.write(f"{date}|{task}\n")
 
 def calculate_streak(completed_tasks):
   streak = 0
