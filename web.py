@@ -11,13 +11,12 @@ def add_todo():
     functions.write_file(todos)
     st.session_state['new_todo'] = ''
 
-def update_completed_tasks():
-    
+def update_completed_tasks(completed_task):
     completed_tasks = functions.read_completed_tasks()
     today = datetime.date.today().isoformat()
     if today not in completed_tasks:
         completed_tasks[today] = []
-    completed_tasks[today].append(completed_tasks)
+    completed_tasks[today].append(completed_task)  # Append the completed task
     functions.write_completed_tasks(completed_tasks)
 
     streak = functions.calculate_streak(completed_tasks)
@@ -46,7 +45,7 @@ for index, todo in enumerate(todos):
         todos.pop(index)
         functions.write_file(todos)
         del st.session_state[todo]
-        update_completed_tasks()
+        update_completed_tasks(todo.strip())  # Pass the completed task to the function
         st.rerun(scope='app')
 
 
