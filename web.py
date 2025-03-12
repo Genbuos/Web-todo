@@ -24,6 +24,15 @@ def update_completed_tasks():
     st.session_state['streak'] = streak
 
 
+def display_completed_tasks():
+    completed_tasks = functions.read_completed_tasks()
+    today = datetime.date.today().isoformat()
+    tasks_today = completed_tasks.get(today, [])
+    st.write(f"Tasks Completed Today: {len(tasks_today)}")
+    for task in tasks_today:
+        st.write(f"- {task}")
+ 
+
 todos = functions.read_file()
 
 st.title("Todo.py")
