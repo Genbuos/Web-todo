@@ -47,9 +47,10 @@ for index, todo in enumerate(todos):
         functions.write_file(todos)
         del st.session_state[todo]
         update_completed_tasks(todo.strip())
-        display_completed_tasks()  # Pass the completed task to the function
         st.rerun(scope='app')
 
 
 st.text_input(label="", placeholder="Enter a task...", on_change=add_todo, key='new_todo')
 st.write(f"Current Streak: {st.session_state.get('streak', 0)} days")
+
+display_completed_tasks()  # Call the function to display completed tasks
