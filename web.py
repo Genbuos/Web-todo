@@ -12,7 +12,7 @@ def add_todo():
     st.session_state['new_todo'] = ''
 
 def update_completed_tasks():
-      #TODO make read_completed_tasks, write_completed_tasks in functtions.py
+    
     completed_tasks = functions.read_completed_tasks()
     today = datetime.date.today().isoformat()
     if today not in completed_tasks:

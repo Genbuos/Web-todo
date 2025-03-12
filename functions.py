@@ -3,7 +3,7 @@ import os
 import datetime
 
 FILEPATH = "todos.txt"
-COMPLETED_TASKS_FILEPATH ="completed_tasks.txt"
+COMPLETED_TASKS_FILEPATH ="completed_tasks.json"
 
 def read_file(filepath=FILEPATH):
     """ This reads our txt file that stores the objectives added by the user.
