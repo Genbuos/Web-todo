@@ -35,8 +35,8 @@ def display_completed_tasks():
 
 todos = functions.read_file()
 
-st.title("Todo.py")
-st.subheader("Coded by - Jordan Mitchell")
+st.title("Productivity Tracker")
+st.subheader("How often are you making plans and not following through? I was there too.")
 st.write("Add a task to increase productivity.")
 
 for index, todo in enumerate(todos):
