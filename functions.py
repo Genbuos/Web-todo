@@ -32,8 +32,6 @@ def read_completed_tasks(filepath=COMPLETED_TASKS_FILEPATH):
         return {}
 
 def write_completed_tasks(completed_tasks, filepath=COMPLETED_TASKS_FILEPATH):
-    if not os.path.exists(filepath):
-       return {}
     with open(filepath, 'w') as file_local:
         json.dump(completed_tasks, file_local)
 
