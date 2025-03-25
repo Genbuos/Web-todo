@@ -26,14 +26,15 @@ def login():
                 st.session_state['logged_in'] = True
                 st.session_state['username'] = username
                 st.sidebar.success("🔒")
-                st.session_state['rerun'] = not st.session_state.get('rerun', False)
+                st.experimental_set_query_params(logged_in=True)
             else:
                 st.sidebar.error("Invalid username or password")
 
 
 def main():
+    query_params = st.experimental_get_query_params()
     if 'logged_in' not in st.session_state:
-        st.session_state['logged_in'] = False
+        st.session_state['logged_in'] = query_params.get('logged_in', [False])[0] == 'True'
     if not st.session_state['logged_in']:
         register()
         login()
@@ -69,7 +70,7 @@ def main():
 
             if checkbox:
                 update_completed_tasks(task_id)
-                st.rerun(scope="app")
+                st.experimental_set_query_params(rerun=True)
         st.text_input(label="", placeholder="Enter a task...", on_change=add_todo, key='new_todo')
         st.write(f"Current Streak: {st.session_state.get('streak', 0)} days")
         display_completed_tasks()  # Call the function to display completed tasks
