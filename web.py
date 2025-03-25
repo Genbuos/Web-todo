@@ -19,8 +19,8 @@ def register():
 def login():
     st.sidebar.title("Lock in!")
     username = st.sidebar.text_input("Username")
-    password = st.sidebar.text_input("Password", type="password")
-    if st.sidebar.button("Lock in!"):
+    password = st.sidebar.text_input("Password", type="password", key='login_password')
+    if st.sidebar.button("Lock in!", key='login_button'):
         if database.authenticate_user(username, password):
             st.session_state['logged_in'] = True
             st.session_state['username'] = username
@@ -30,7 +30,9 @@ def login():
 
 
 def main():
-    if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
+    if 'logged_in' not in st.session_state:
+        st.session_state['logged_in'] = False
+    if not st.session_state['logged_in']:
         register()
         login()
     else:
