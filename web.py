@@ -26,6 +26,7 @@ def login():
                 st.session_state['logged_in'] = True
                 st.session_state['username'] = username
                 st.sidebar.success("🔒")
+                st.session_state['rerun'] = not st.session_state.get('rerun', False)
             else:
                 st.sidebar.error("Invalid username or password")
 
