@@ -1,56 +1,74 @@
 import streamlit as st
+
+import database
 import functions
 import datetime
 
 todos = functions.read_file()
 
 
-def add_todo():
-    todo_n = st.session_state['new_todo'] + '\n'
-    todos.append(todo_n)
-    functions.write_file(todos)
-    st.session_state['new_todo'] = ''
-    
-
-def update_completed_tasks(completed_task):
-    completed_tasks = functions.read_completed_tasks()
-    today = datetime.date.today().isoformat()
-    if today not in completed_tasks:
-        completed_tasks[today] = []
-    completed_tasks[today].append(completed_task)  # Append the completed task
-    functions.write_completed_tasks(completed_tasks)
-
-    streak = functions.calculate_streak(completed_tasks)
-    st.session_state['streak'] = streak
+def register():
+    st.sidebar.title("Lock in!")
+    username = st.sidebar.text_input("New Username")
+    password = st.sidebar.text_input("New Password", type="password")
+    if st.sidebar.button("Lock in!"):
+        database.add_user(username, password)
+        st.sidebar.success("Welcome on the journey of improvement!")
 
 
-def display_completed_tasks():
-    completed_tasks = functions.read_completed_tasks()
-    today = datetime.date.today().isoformat()
-    tasks_today = completed_tasks.get(today, [])
-    st.write(f"Tasks Completed Today: {len(tasks_today)}")
-    for task in tasks_today:
-        st.write(f"- {task}")
- 
-
-todos = functions.read_file()
-
-st.title("Productivity Tracker")
-st.subheader("How often are you making plans and not following through? I was there too.")
-st.write("Add a task to increase productivity.")
-
-for index, todo in enumerate(todos):
-    checkbox = st.checkbox(todo, key=todo)
-
-    if checkbox:
-        todos.pop(index)
-        functions.write_file(todos)
-        del st.session_state[todo]
-        update_completed_tasks(todo.strip())
-        st.rerun(scope='app')
+def login():
+    st.sidebar.title("Lock in!")
+    username = st.sidebar.text_input("Username")
+    password = st.sidebar.text_input("Password", type="password")
+    if st.sidebar.button("Lock in!"):
+        if database.authenticate_user(username, password):
+            st.session_state['logged_in'] = True
+            st.session_state['username'] = username
+            st.sidebar.success("🔒")
+        else:
+            st.sidebar.error("Invalid username or password")
 
 
-st.text_input(label="", placeholder="Enter a task...", on_change=add_todo, key='new_todo')
-st.write(f"Current Streak: {st.session_state.get('streak', 0)} days")
+def main():
+    if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
+        register()
+        login()
+    else:
+        todos = database.get_tasks(st.session_state['username'])
 
-display_completed_tasks()  # Call the function to display completed tasks
+        def add_todo():
+            todo_n = st.session_state['new_todo']
+            database.add_task(st.session_state['username'], todo_n)
+            st.session_state['new_todo'] = ''
+
+        def update_completed_tasks(task_id):
+            today = datetime.date.today().isoformat()
+            database.complete_task(task_id, today)
+
+            completed_tasks = database.get_completed_tasks(st.session_state['username'], today)
+            streak = functions.calculate_streak(completed_tasks)
+            st.session_state['streak'] = streak
+
+        def display_completed_tasks():
+            today = datetime.date.today().isoformat()
+            tasks_today = database.get_completed_tasks(st.session_state['username'], today)
+            st.write(f"Tasks Completed Today: {len(tasks_today)}")
+            for task in tasks_today:
+                st.write(f"- {task[0]}")
+
+        st.title("Productivity Tracker")
+        st.subheader("How often are you making plans and not following through? I was there too.")
+        st.write("Add a task to increase productivity.")
+
+        for task_id, todo in todos:
+            checkbox = st.checkbox(todo, key=todo)
+
+            if checkbox:
+                update_completed_tasks(task_id)
+                st.rerun(scope="app")
+        st.text_input(label="", placeholder="Enter a task...", on_change=add_todo, key='new_todo')
+        st.write(f"Current Streak: {st.session_state.get('streak', 0)} days")
+        display_completed_tasks()  # Call the function to display completed tasks
+
+if __name__ == "__main__":
+    main()
