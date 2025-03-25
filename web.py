@@ -21,12 +21,13 @@ def login():
     username = st.sidebar.text_input("Username")
     password = st.sidebar.text_input("Password", type="password", key='login_password')
     if st.sidebar.button("Lock in!", key='login_button'):
-        if database.authenticate_user(username, password):
-            st.session_state['logged_in'] = True
-            st.session_state['username'] = username
-            st.sidebar.success("🔒")
-        else:
-            st.sidebar.error("Invalid username or password")
+        with st.spinner("Authenticating..."):
+            if database.authenticate_user(username, password):
+                st.session_state['logged_in'] = True
+                st.session_state['username'] = username
+                st.sidebar.success("🔒")
+            else:
+                st.sidebar.error("Invalid username or password")
 
 
 def main():
