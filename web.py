@@ -4,14 +4,14 @@ import database
 import functions
 import datetime
 
-todos = functions.read_file()
+database.create_tables()
 
 
 def register():
-    st.sidebar.title("Lock in!")
+    st.sidebar.title("Register To Lock in!")
     username = st.sidebar.text_input("New Username")
     password = st.sidebar.text_input("New Password", type="password")
-    if st.sidebar.button("Lock in!"):
+    if st.sidebar.button("Register To Lock in!"):
         database.add_user(username, password)
         st.sidebar.success("Welcome on the journey of improvement!")
 
@@ -69,6 +69,7 @@ def main():
         st.text_input(label="", placeholder="Enter a task...", on_change=add_todo, key='new_todo')
         st.write(f"Current Streak: {st.session_state.get('streak', 0)} days")
         display_completed_tasks()  # Call the function to display completed tasks
+
 
 if __name__ == "__main__":
     main()
